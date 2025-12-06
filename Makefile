@@ -8,8 +8,7 @@ LD = ld
 LDFLAGS = -melf_i386
 
 objects = obj/loader.o \
-			 obj/kernel.o \
-			 obj/io.o
+			 obj/kernel.o
 
 all: keel-os.bin
 

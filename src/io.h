@@ -6,12 +6,12 @@
 #define COLS 80
 #define ROWS 25
 
-extern unsigned short *video_mem;
-extern uint8_t x, y;
+static unsigned short *video_mem = (unsigned short *)0xb8000;
+static u8 x = 0, y = 0;
 
 static inline void putchar(const char c) {
 	if(c == '\n') {
-		uint8_t cur_y = y;
+		u8 cur_y = y;
 		while(y == cur_y) {
 			putchar(' ');
 		}
@@ -33,51 +33,51 @@ static inline void printf(const char *str) {
 	}
 }
 
-static inline void outb(uint16_t port, uint8_t val) {
+static inline void outb(u16 port, u8 val) {
 	asm volatile("outb %b0, %w1" : : "a"(val), "Nd"(port) : "memory");
 }
 
-static inline uint8_t inb(uint16_t port) {
-	uint8_t ret;
+static inline u8 inb(u16 port) {
+	u8 ret;
 	asm volatile("inb %w1, %b0" : "=a"(ret) : "Nd"(port) : "memory");
 	return ret;
 }
 
-#define DECLARE_PRINT_UINT(w)                                                  \
-	static inline void print_uint##w(uint##w##_t n) {                          \
-		if(n == 0) {                                                           \
-			putchar('0');                                                      \
-			return;                                                            \
-		}                                                                      \
-                                                                               \
-		char buf[w];                                                           \
-		uint8_t i = 0;                                                         \
-                                                                               \
-		while(n) {                                                             \
-			uint8_t d = n % 10;                                                \
-			buf[i++] = d + '0';                                                \
-			n /= 10;                                                           \
-		}                                                                      \
-                                                                               \
-		for(int8_t j = i - 1; j >= 0; j--) {                                   \
-			putchar(buf[j]);                                                   \
-		}                                                                      \
+#define DECLARE_PRINT_U(w)                                                                                             \
+	static inline void print_u##w(u##w n) {                                                                            \
+		if(n == 0) {                                                                                                   \
+			putchar('0');                                                                                              \
+			return;                                                                                                    \
+		}                                                                                                              \
+                                                                                                                       \
+		char buf[w];                                                                                                   \
+		u8 i = 0;                                                                                                      \
+                                                                                                                       \
+		while(n) {                                                                                                     \
+			u8 d = n % 10;                                                                                             \
+			buf[i++] = d + '0';                                                                                        \
+			n /= 10;                                                                                                   \
+		}                                                                                                              \
+                                                                                                                       \
+		for(i8 j = i - 1; j >= 0; j--) {                                                                               \
+			putchar(buf[j]);                                                                                           \
+		}                                                                                                              \
 	}
 
-#define DECLARE_PRINT_INT(w)                                                   \
-	static inline void print_int##w(int##w##_t n) {                            \
-		if(n < 0) {                                                            \
-			putchar('-');                                                      \
-			print_uint##w(-n);                                                 \
-		}                                                                      \
+#define DECLARE_PRINT_I(w)                                                                                             \
+	static inline void print_i##w(i##w n) {                                                                            \
+		if(n < 0) {                                                                                                    \
+			putchar('-');                                                                                              \
+			print_u##w(-n);                                                                                            \
+		}                                                                                                              \
 	}
 
-DECLARE_PRINT_UINT(8)
-DECLARE_PRINT_UINT(16)
-DECLARE_PRINT_UINT(32)
+DECLARE_PRINT_U(8)
+DECLARE_PRINT_U(16)
+DECLARE_PRINT_U(32)
 
-DECLARE_PRINT_INT(8)
-DECLARE_PRINT_INT(16)
-DECLARE_PRINT_INT(32)
+DECLARE_PRINT_I(8)
+DECLARE_PRINT_I(16)
+DECLARE_PRINT_I(32)
 
 #endif

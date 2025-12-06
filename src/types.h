@@ -1,24 +1,27 @@
-#ifndef KEEL_OS_TYPES_H
-#define KEEL_OS_TYPES_H
+#ifndef KEEL_OS_TYPES_H_
+#define KEEL_OS_TYPES_H_
 
-typedef unsigned int uint32_t;
-typedef unsigned short uint16_t;
-typedef unsigned char uint8_t;
+typedef unsigned int u32;
+typedef unsigned short u16;
+typedef unsigned char u8;
 
-typedef int int32_t;
-typedef short int16_t;
-typedef signed char int8_t;
+typedef int i32;
+typedef short i16;
+typedef signed char i8;
 
-#define INT8_MIN (-128)
-#define INT16_MIN (-32767 - 1)
-#define INT32_MIN (-2147483647 - 1)
+typedef u32 usize;
+typedef i32 isize;
 
-#define INT8_MAX (127)
-#define INT16_MAX (32767)
-#define INT32_MAX (2147483647)
+#define I8_MIN (-128)
+#define I16_MIN (-32767 - 1)
+#define I32_MIN (-2147483647 - 1)
 
-#define UINT8_MAX (255)
-#define UINT16_MAX (65535)
-#define UINT32_MAX (4294967295U)
+#define I8_MAX (127)
+#define I16_MAX (32767)
+#define I32_MAX (2147483647)
+
+#define U8_MAX (255)
+#define U16_MAX (65535)
+#define U32_MAX (4294967295U)
 
 #endif

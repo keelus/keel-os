@@ -1,7 +1,16 @@
 CompileFlags:
-  Add: [
-    -xc,
-    -std=gnu23,
-    -Wno-incompatible-library-redeclaration
-  ]
+  Add:
+    - -std=gnu11
+    - -m32
+    - -fno-builtin
+    - -nostdinc
+    - -nostdlib
+    - -x
+    - c
+    - -I./src/
 
+Completion:
+  HeaderInsertion: Never
+
+Index:
+  StandardLibrary: false
