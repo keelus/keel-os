@@ -2,3 +2,5 @@ obj
 iso
 *.bin
 *.iso
+.cache
+qemu.log

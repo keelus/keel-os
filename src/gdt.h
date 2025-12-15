@@ -73,8 +73,8 @@ static inline void global_descriptor_table_initialize() {
 	};
 
 	u32 i[2];
-	i[0] = (u32)&gdt;
-	i[1] = sizeof(struct global_descriptor_table) << 16;
+	i[1] = (u32)&gdt;
+	i[0] = sizeof(struct global_descriptor_table) << 16;
 
 	asm volatile("lgdt (%0)" : : "p"(((u8 *)i) + 2));
 }
@@ -86,7 +86,5 @@ static inline u16 global_descriptor_table_code_segment_selector() {
 static inline u16 global_descriptor_table_data_segment_selector() {
 	return (u32)&gdt.data_segment_selector - (u32)&gdt;
 }
-
-typedef unsigned int u32;
 
 #endif

@@ -8,7 +8,8 @@ LD = ld
 LDFLAGS = -melf_i386
 
 objects = obj/loader.o \
-			 obj/kernel.o
+			 obj/kernel.o \
+			 obj/interruptstubs.o
 
 all: keel-os.bin
 
@@ -37,10 +38,10 @@ iso: keel-os.bin
 	rm -rf iso
 
 run: iso
-	qemu-system-i386 --drive file=keel-os.iso,format=raw -display sdl
+	qemu-system-i386 --drive file=keel-os.iso,format=raw -display sdl -no-reboot -d int,guest_errors,cpu_reset -D qemu.log
 
 clean:
 	find . -name "*.o" -delete
-	rm -rf *.bin *.iso iso
+	rm -rf *.bin *.iso iso obj
 
 .PHONY: clean iso run
