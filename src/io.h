@@ -9,22 +9,36 @@
 static unsigned short *video_mem = (unsigned short *)0xb8000;
 static u8 x = 0, y = 0;
 
+static inline void scroll_up() {
+	for(u8 local_y = 0; local_y < ROWS - 1; local_y++) {
+		for(u8 local_x = 0; local_x < COLS; local_x++) {
+			video_mem[COLS * local_y + local_x] = video_mem[COLS * (local_y + 1) + local_x];
+		}
+	}
+	for(u8 local_x = 0; local_x < COLS; local_x++) {
+		video_mem[COLS * (ROWS - 1) + local_x] = (video_mem[COLS * (ROWS - 1) + local_x] & 0xFF00) | ' ';
+	}
+	y--;
+}
+
 static inline void putchar(const char c) {
 	if(c == '\n') {
-		u8 cur_y = y;
-		while(y == cur_y) {
+		for(usize local_x = x; local_x < COLS; local_x++) {
 			putchar(' ');
 		}
+		y++;
+		x = 0;
+		if(y >= ROWS) { scroll_up(); }
 		return;
 	}
 
-	video_mem[COLS * y + x] = (video_mem[COLS * y + x] & 0xFF00) | c;
-
-	x++;
-	if(x > COLS) {
+	if(x >= COLS) {
 		y++;
 		x = 0;
 	}
+	if(y >= ROWS) { scroll_up(); }
+	video_mem[COLS * y + x] = (video_mem[COLS * y + x] & 0xFF00) | c;
+	x++;
 }
 
 static inline void printf(const char *str) {
