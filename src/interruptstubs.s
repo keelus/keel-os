@@ -7,14 +7,14 @@
 .macro HandleException num
 .global handle_exception\num\()
 handle_exception\num\():
-	movb $\num, (interruptnumber)
+	movb $\num, (interrupt_number)
 	jmp int_bottom
 .endm
 
 .macro HandleInterruptRequest num
 .global handle_interrupt_request\num\()
 handle_interrupt_request\num\():
-	movb $\num + IRQ_BASE, (interruptnumber)
+	movb $\num + IRQ_BASE, (interrupt_number)
 	jmp int_bottom
 .endm
 
@@ -22,27 +22,30 @@ HandleInterruptRequest 0x00
 HandleInterruptRequest 0x01
 
 int_bottom:
-	pusha # Push all the registers ?
-	pushl %ds # Push data segments
-	pushl %es
-	pushl %fs
-	pushl %gs
+	pushfl
+	pushal
 
+	push %ds
+	push %es
+	push %fs
+	push %gs
+	
 	pushl %esp
-	push (interruptnumber)
+	push (interrupt_number)
 	call handle_interrupt
-	# addl $5, %esp
 	movl %eax, %esp
 
-	popl %gs
-	popl %fs
-	popl %es
-	popl %ds 
-	popa 
+	pop %gs
+	pop %fs
+	pop %es
+	pop %ds
+
+	popal
+	popfl
 
 .global ignore_interrupt_request
 ignore_interrupt_request:
 	iret
 
 .data
-	interruptnumber: .byte 0
+	interrupt_number: .byte 0
